@@ -1634,13 +1634,10 @@
   setInterval(function(){ loadAll(true); }, 180000);
 })();
 </script>
-  <!-- Mulai Pemutar Musik -->
-<div id="dc-musik-box" style="position:fixed; bottom:16px; right:16px; z-index:9999; background:#0b3b68; color:#ffffff; padding:8px 12px; border-radius:999px; box-shadow:0 6px 18px rgba(15,23,42,0.22); display:flex; align-items:center; gap:8px; font-family:sans-serif; font-size:12px;">
-  <button id="dc-btn-musik" type="button" style="background:#ffffff; color:#0b3b68; border:0; border-radius:999px; padding:5px 11px; font-weight:700; cursor:pointer;">
-    ▶ Putar
-  </button>
-  <span id="dc-status-musik">Musik</span>
-</div>
+<!-- Mulai Pemutar Musik -->
+<button id="dc-btn-musik" type="button" title="Putar / Jeda Musik" aria-label="Putar atau jeda musik latar" style="position:fixed; bottom:14px; right:14px; z-index:9999; width:34px; height:34px; padding:0; border:1px solid rgba(15,23,42,0.14); border-radius:999px; background:rgba(255,255,255,0.35); color:rgba(11,59,104,0.65); font-size:13px; line-height:1; display:flex; align-items:center; justify-content:center; cursor:pointer; backdrop-filter:blur(4px); transition:opacity 0.2s ease, background-color 0.2s ease, color 0.2s ease; opacity:0.55;" onmouseover="this.style.opacity='0.95';this.style.background='rgba(255,255,255,0.9)';this.style.color='#0b3b68';" onmouseout="this.style.opacity='0.55';this.style.background='rgba(255,255,255,0.35)';this.style.color='rgba(11,59,104,0.65)';">
+  ▶&#65039;
+</button>
 
 <audio id="dc-bg-audio" loop preload="auto">
   <source src="./DTSEN.mp3" type="audio/mpeg">
@@ -1650,11 +1647,10 @@
 (function () {
   var audio = document.getElementById("dc-bg-audio");
   var btn = document.getElementById("dc-btn-musik");
-  var statusTxt = document.getElementById("dc-status-musik");
 
   function setStatus(playing) {
-    btn.textContent = playing ? "❚❚ Jeda" : "▶ Putar";
-    statusTxt.textContent = playing ? "Aktif" : "Musik";
+    if (!btn) return;
+    btn.innerHTML = playing ? "&#9208;&#65039;" : "&#9654;&#65039;";
   }
 
   function putarAudio() {
@@ -1666,15 +1662,23 @@
     });
   }
 
-  btn.addEventListener("click", function (e) {
-    e.stopPropagation();
-    if (audio.paused) {
-      putarAudio();
-    } else {
-      audio.pause();
-      setStatus(false);
-    }
-  });
+  if (btn) {
+    btn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      if (!audio) return;
+      if (audio.paused) {
+        putarAudio();
+      } else {
+        audio.pause();
+        setStatus(false);
+      }
+    });
+  }
+
+  if (audio) {
+    audio.addEventListener("play", function () { setStatus(true); });
+    audio.addEventListener("pause", function () { setStatus(false); });
+  }
 
   window.addEventListener("load", putarAudio);
 
