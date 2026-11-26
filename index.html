@@ -1634,5 +1634,62 @@
   setInterval(function(){ loadAll(true); }, 180000);
 })();
 </script>
+  <!-- Mulai Pemutar Musik -->
+<div id="dc-musik-box" style="position:fixed; bottom:16px; right:16px; z-index:9999; background:#0b3b68; color:#ffffff; padding:8px 12px; border-radius:999px; box-shadow:0 6px 18px rgba(15,23,42,0.22); display:flex; align-items:center; gap:8px; font-family:sans-serif; font-size:12px;">
+  <button id="dc-btn-musik" type="button" style="background:#ffffff; color:#0b3b68; border:0; border-radius:999px; padding:5px 11px; font-weight:700; cursor:pointer;">
+    ▶ Putar
+  </button>
+  <span id="dc-status-musik">Musik</span>
+</div>
+
+<audio id="dc-bg-audio" loop preload="auto">
+  <source src="./DTSEN.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+(function () {
+  var audio = document.getElementById("dc-bg-audio");
+  var btn = document.getElementById("dc-btn-musik");
+  var statusTxt = document.getElementById("dc-status-musik");
+
+  function setStatus(playing) {
+    btn.textContent = playing ? "❚❚ Jeda" : "▶ Putar";
+    statusTxt.textContent = playing ? "Aktif" : "Musik";
+  }
+
+  function putarAudio() {
+    if (!audio) return;
+    audio.play().then(function () {
+      setStatus(true);
+    }).catch(function () {
+      setStatus(false);
+    });
+  }
+
+  btn.addEventListener("click", function (e) {
+    e.stopPropagation();
+    if (audio.paused) {
+      putarAudio();
+    } else {
+      audio.pause();
+      setStatus(false);
+    }
+  });
+
+  window.addEventListener("load", putarAudio);
+
+  function pemicuInteraksi() {
+    if (audio && audio.paused) {
+      putarAudio();
+    }
+    document.removeEventListener("click", pemicuInteraksi);
+    document.removeEventListener("touchstart", pemicuInteraksi);
+  }
+
+  document.addEventListener("click", pemicuInteraksi);
+  document.addEventListener("touchstart", pemicuInteraksi);
+})();
+</script>
+<!-- Akhir Pemutar Musik -->
 </body>
 </html>
